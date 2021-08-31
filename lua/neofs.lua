@@ -266,37 +266,37 @@ function NeofsOnCursorMoved()
 end
 
 local function define_mappings(buffer)
-    local mappings = { n = {} }
+  local mappings = { n = {} }
 
-    mappings['n']['0'] = [[:lua NeofsMove('root')<CR>]]
-    mappings['n']['h'] = [[:lua NeofsMove('left')<CR>]]
-    mappings['n']['j'] = [[:lua NeofsMove('down')<CR>]]
-    mappings['n']['k'] = [[:lua NeofsMove('up')<CR>]]
-    mappings['n']['l'] = [[:lua NeofsMove('right')<CR>]]
-    mappings['n']['<cr>'] = [[:lua NeofsMove('right')<CR>]]
+  mappings['n']['0'] = [[:lua NeofsMove('root')<CR>]]
+  mappings['n']['h'] = [[:lua NeofsMove('left')<CR>]]
+  mappings['n']['j'] = [[:lua NeofsMove('down')<CR>]]
+  mappings['n']['k'] = [[:lua NeofsMove('up')<CR>]]
+  mappings['n']['l'] = [[:lua NeofsMove('right')<CR>]]
+  mappings['n']['<cr>'] = [[:lua NeofsMove('right')<CR>]]
 
-    mappings['n']['c'] = [[:lua NeofsChangeCWD()<CR>]]
-    mappings['n']['f'] = [[:lua NeofsCreateFile()<CR>]]
-    mappings['n']['d'] = [[:lua NeofsCreateDirectory()<CR>]]
-    mappings['n']['<c-r>'] = [[:lua NeofsRename()<CR>]]
-    mappings['n']['<c-d>'] = [[:lua NeofsDelete(false)<CR>]]
-    mappings['n']['<m-c-d>'] = [[:lua NeofsDelete(true)<CR>]]
+  mappings['n']['c'] = [[:lua NeofsChangeCWD()<CR>]]
+  mappings['n']['f'] = [[:lua NeofsCreateFile()<CR>]]
+  mappings['n']['d'] = [[:lua NeofsCreateDirectory()<CR>]]
+  mappings['n']['<c-r>'] = [[:lua NeofsRename()<CR>]]
+  mappings['n']['<c-d>'] = [[:lua NeofsDelete(false)<CR>]]
+  mappings['n']['<m-c-d>'] = [[:lua NeofsDelete(true)<CR>]]
 
-    mappings['n']['q'] = [[:lua NeofsQuit()<CR>]]
+  mappings['n']['q'] = [[:lua NeofsQuit()<CR>]]
 
-    for lhs, rhs in pairs(M.config.mappings) do
-      table.insert(NeofsCustomMappings, rhs)
-      mappings['n'][lhs] = string.format([[:lua NeofsCallCustomMapping(%d)<CR>]], #NeofsCustomMappings)
+  for lhs, rhs in pairs(M.config.mappings) do
+    table.insert(NeofsCustomMappings, rhs)
+    mappings['n'][lhs] = string.format([[:lua NeofsCallCustomMapping(%d)<CR>]], #NeofsCustomMappings)
+  end
+
+  for mode, mappings in pairs(mappings) do
+    for lhs, rhs in pairs(mappings) do
+      vim.api.nvim_buf_set_keymap(buffer, mode, lhs, rhs, {
+        noremap = true,
+        silent = true
+      })
     end
-
-    for mode, mappings in pairs(mappings) do
-      for lhs, rhs in pairs(mappings) do
-        vim.api.nvim_buf_set_keymap(buffer, mode, lhs, rhs, {
-          noremap = true,
-          silent = true
-        })
-      end
-    end
+  end
 end
 
 local function display_items(buffer, items)
