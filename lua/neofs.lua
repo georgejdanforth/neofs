@@ -121,6 +121,15 @@ function NeofsMove(direction)
   move_handler[direction]()
 end
 
+function NeofsOpenBuffer(how)
+  local item = M.fm.navigator.item()
+  if not item or item.stat.type ~= "file" then
+    return
+  end
+  NeofsQuit()
+  vim.cmd(how .. " " .. item.path)
+end
+
 function NeofsCreateFile()
   local name = vim.fn.input('New File: ')
   if name == "" then
@@ -274,6 +283,10 @@ local function define_mappings(buffer)
   mappings['n']['k'] = [[:lua NeofsMove('up')<CR>]]
   mappings['n']['l'] = [[:lua NeofsMove('right')<CR>]]
   mappings['n']['<cr>'] = [[:lua NeofsMove('right')<CR>]]
+
+  mappings['n']['t'] = [[:lua NeofsOpenBuffer('tabedit')<CR>]]
+  mappings['n']['x'] = [[:lua NeofsOpenBuffer('split')<CR>]]
+  mappings['n']['v'] = [[:lua NeofsOpenBuffer('vsplit')<CR>]]
 
   mappings['n']['c'] = [[:lua NeofsChangeCWD()<CR>]]
   mappings['n']['f'] = [[:lua NeofsCreateFile()<CR>]]
